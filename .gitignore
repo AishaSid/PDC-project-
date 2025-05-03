@@ -1,0 +1,23 @@
+# Ignore all .exe files (Windows executables)
+*.exe
+
+# Ignore VS Code settings directory
+.vscode/
+
+# Additional C++-related ignores (optional but recommended)
+# Object files
+*.o
+*.obj
+
+# Executables (cross-platform)
+main
+a.out
+
+# Build directories (if you use them)
+build/
+bin/
+obj/
+
+# Temporary files
+*.bak
+*.tmp
