@@ -1,14 +1,16 @@
 #include <iostream>
 #include <vector>
 #include "SospUpdate.h"
+#include <tuple>
 using namespace std;
 
 int main() {
-    // Example usage
+    
+   
     int numVertices = 5;
     vector<vector<pair<int, int>>> graph(numVertices);
 
-    // Add edges to the graph
+    
     graph[0].push_back({1, 1});
     graph[0].push_back({2, 4});
     graph[1].push_back({2, 2});
@@ -20,7 +22,7 @@ int main() {
     SOSP_Update sosp(graph, numVertices);
 
     // Insert new edges
-    vector<pair<int, int>> insertions = {{0, 3}, {1, 4}};
+    vector<tuple<int, int, int>> insertions = {{0, 3, 2}, {1, 4, 4}};
 
     // Update the graph with new insertions
     sosp.update(insertions);

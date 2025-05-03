@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <utility>
+#include <tuple>
 using namespace std;
 
 
@@ -11,25 +12,25 @@ class SOSP_Update {
 public:
     // Constructor
     SOSP_Update(const vector<vector<pair<int, int>>>& graph, int numVertices);
-
-    // Function to update the graph with new insertions
-    void update(const vector<pair<int, int>>& insertions);
-
-    // Function to get the updated distances
+    
+    void update(const vector<tuple<int, int, int>>& insertions);
+    
     const vector<int>& getDistances() const;
-
-    // Function to get the parent array
+   
     const vector<int>& getParentArray() const;
 
 private:
     int numVertices;
     vector<list<pair<int, int>>> adjacencyList;
+    vector<list<pair<int, int>>> reverseAdjList;
+
     vector<int> distances;
     vector<int> parent;
     vector<int> marked;
 
-    void preprocess(const vector<pair<int, int>>& insertions);
-    void processChangedEdges();
+    vector<list<pair<int, int>>> preprocess(const vector<tuple<int, int, int>>& insertions);
+    
+    void processChangedEdges(const vector<list<pair<int, int>>>& I);
     void propagateUpdate(vector<int>& Aff);
 };
 
