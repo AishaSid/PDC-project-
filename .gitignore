@@ -11,7 +11,7 @@
 
 # Executables (cross-platform)
 main
-a.out
+*.out
 
 # Build directories (if you use them)
 build/
