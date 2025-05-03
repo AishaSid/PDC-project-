@@ -1,6 +1,11 @@
 #include <iostream>
 #include <vector>
+#include "MospUpdate.h"
 #include "SospUpdate.h"
+#include <queue>
+#include <algorithm>
+#include <limits>
+#include <utility>
 using namespace std;
 
 int main() {
@@ -16,18 +21,22 @@ int main() {
     graph[2].push_back({3, 1});
     graph[3].push_back({4, 3});
 
-    // Initialize the SOSP_Update object
-    SOSP_Update sosp(graph, numVertices);
+    // Initialize the MOSP_Update object with multiple sources
+    vector<int> sources = {0, 1};
+    MOSP_Update mosp(graph, sources);
 
     // Insert new edges
-    vector<pair<int, int>> insertions = {{0, 3}, {1, 4}};
+    vector<tuple<int, int, int>> insertions = {
+        {0, 3, 4},
+        {2, 3, 4}
+    };
 
     // Update the graph with new insertions
-    sosp.update(insertions);
+    mosp.update(insertions);
 
     // Get the updated distances and parent array
-    const vector<int>& distances = sosp.getDistances();
-    const vector<int>& parent = sosp.getParentArray();
+    const vector<int>& distances = mosp.getDistances();
+    const vector<int>& parent = mosp.getParentArray();
 
     // Print the results
     cout << "Updated Distances: ";
