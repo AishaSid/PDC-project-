@@ -1,0 +1,2 @@
+Update 1 (aisha ) : do ./run_app.sh in /Sequential_Code dir to run the code.
+ - see how the adjacency list is storing  ( src, des, wgt ) 
