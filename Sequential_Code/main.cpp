@@ -58,6 +58,8 @@ int main() {
     };
 
     sosp.update(insertions);
+    sosp.removeAffectedEdges();
+
 
     cout << "\nGraph after SOSP update:\n";
     printGraphList(sosp.getGraph());

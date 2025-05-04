@@ -22,6 +22,7 @@ public:
         return adjacencyList;
     }
     
+    void removeAffectedEdges();
 private:
     int numVertices;
     vector<list<pair<int, int>>> adjacencyList;
@@ -30,6 +31,7 @@ private:
     vector<int> distances;
     vector<int> parent;
     vector<int> marked;
+    void updateParentAndDistance();
 
     vector<list<pair<int, int>>> preprocess(const vector<tuple<int, int, int>>& insertions);
     

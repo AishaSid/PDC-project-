@@ -2,11 +2,25 @@
 #include <queue>
 #include <algorithm>
 #include <limits>
+#include <unordered_set>
 #include <list>
 #include <tuple>
 #include <vector>
 #include <iostream>
 using namespace std;
+
+void SOSP_Update::updateParentAndDistance()
+{
+    for (int u = 0; u < numVertices; ++u) {
+        for (const auto& [v, w] : adjacencyList[u]) {
+            if (distances[u] != numeric_limits<int>::max() && distances[v] > distances[u] + w) {
+                distances[v] = distances[u] + w;
+                parent[v] = u;
+            }
+        }
+    }
+}
+
 
 SOSP_Update::SOSP_Update(const vector<vector<pair<int, int>>>& graph, int numVertices)
     : numVertices(numVertices),
@@ -16,130 +30,138 @@ SOSP_Update::SOSP_Update(const vector<vector<pair<int, int>>>& graph, int numVer
       marked(numVertices, 0),
       reverseAdjList(numVertices)
 {
-    // Convert vector<vector<>> to vector<list<>>
     for (int u = 0; u < numVertices; ++u) {
         for (const auto& [v, w] : graph[u]) {
             adjacencyList[u].emplace_back(v, w);
-            reverseAdjList[v].emplace_back(u, w);  // Build reverse graph
+            reverseAdjList[v].emplace_back(u, w);
         }
     }
 
-    // Set the source distance to 0
     if (!distances.empty()) {
-        distances[0] = 0;  // Assuming the source vertex is 0
+        distances[0] = 0;  // Source node is assumed to be 0
     }
 }
 
-const std::vector<int>& SOSP_Update::getDistances() const
-{
-    return distances;
-}
-
-const std::vector<int>& SOSP_Update::getParentArray() const 
-{
-    return parent;
-}
-
-vector<list<pair<int, int>>> SOSP_Update::preprocess(const vector<tuple<int, int, int>>& insertions) 
-{
-    vector<list<pair<int, int>>> I(numVertices);
-
-    
-    for (const auto& [u, v, w] : insertions) 
-    {
-        adjacencyList[u].push_back({v, w});
-       // I[v].push_back({u, w});
-    }
-
-    // Add insertions to I
-    for (int u = 0; u < numVertices; ++u) 
-    {
-        for (const auto& [v, w] : adjacencyList[u])
-        {
-            I[v].push_back({u, w});  // Correct: edge from u to v
-        }
-    }
-    
-    // Output the array I for debugging
-    for (int i = 0; i < I.size(); ++i) 
-    {
-        cout << "I[" << i << "]: ";
-        for (const auto& [u, w] : I[i]) 
-        {
-            cout << "(" << u << ", " << w << ") ";
-        }
-        cout << endl;
-    }
-
-    return I;
-}
+const vector<int>& SOSP_Update::getDistances() const { return distances; }
+const vector<int>& SOSP_Update::getParentArray() const { return parent; }
 
 void SOSP_Update::update(const vector<tuple<int, int, int>>& insertions)
 {
-    vector<list<pair<int, int>>> I = preprocess(insertions);
-    processChangedEdges(I);
-}
-
-void SOSP_Update::processChangedEdges(const vector<list<pair<int, int>>>& I)
-{
-    vector<int> Aff;
     marked.assign(numVertices, 0);
+    vector<int> Aff;
 
-    for (int v = 0; v < numVertices; ++v)
-     {
-        for (const auto& [u, _] : I[v])
-         {
-            auto it = find_if(adjacencyList[u].begin(), adjacencyList[u].end(),
-                              [v](const pair<int, int>& p) { return p.first == v; });
+    
+    for (const auto& [u, v, w] : insertions)
+    {
+        // Add to graph and reverse graph
+        adjacencyList[u].emplace_back(v, w);
+        reverseAdjList[v].emplace_back(u, w);
 
-            if (it != adjacencyList[u].end())
-            {
-                int weight = it->second;
-                if (distances[v] > distances[u] + weight)
-                 {
-                    distances[v] = distances[u] + weight;
-                    parent[v] = u;
-                    marked[v] = 1;
-                    Aff.push_back(v);
-                }
+        if (distances[u] != numeric_limits<int>::max() && distances[v] > distances[u] + w)
+        {
+            distances[v] = distances[u] + w;
+            parent[v] = u;
+            if (!marked[v]) {
+                marked[v] = 1;
+                Aff.push_back(v);
             }
         }
     }
+
+    
+    // Step 1: Print the graph
+    cout << "Step 1 :" << endl;
+    for (int u = 0; u < numVertices; ++u) 
+    {
+        cout << "Node " << u << ":";
+        for (const auto& [v, w] : adjacencyList[u]) 
+        {
+            cout << " -> (" << v << ", " << w << ")";
+        }
+        cout << endl;
+    }
+    // print the parent array
+    cout << "Parent Array before update: ";       
+    for (int i = 0; i < numVertices; ++i) {
+        cout << parent[i] << " ";
+    }cout << endl;
+
+   // updateParentAndDistance();
+
+    cout << "Parent Array after update: ";       
+    for (int i = 0; i < numVertices; ++i) {
+        cout << parent[i] << " ";
+    }cout << endl;
+
+    // Print Affected edges
+    cout << "Affected Edges: ";
+    for (int i = 0; i < Aff.size(); ++i) {
+        cout << Aff[i] << " ";
+    }cout <<endl;
+
+
 
     propagateUpdate(Aff);
 }
 
-void SOSP_Update::propagateUpdate(vector<int>& Aff) 
+void SOSP_Update::propagateUpdate(vector<int>& Aff)
 {
-    while (!Aff.empty()) 
+    unordered_set<int> N;
+        int m = 0; 
+    while (!Aff.empty())
     {
-        vector<int> N;
+        m++;
         vector<int> AffPrime;
+        N.clear();
 
-        for (int v : Aff) 
+        for (int v : Aff)
         {
-            for (const auto& [nbr, _] : adjacencyList[v]) 
-            {
-                N.push_back(nbr);
-            }
+            for (const auto& [nbr, _] : adjacencyList[v])
+                N.insert(nbr);
         }
 
         for (int v : N)
-         {
-            for (const auto& [u, w] : reverseAdjList[v]) 
+        {
+            for (const auto& [u, w] : reverseAdjList[v])
             {
-                if (!marked[u]) 
-                    continue;
+                if (!marked[u]) continue;
 
-                if (distances[v] > distances[u] + w) {
+                if (distances[v] > distances[u] + w)
+                {
                     distances[v] = distances[u] + w;
                     parent[v] = u;
-                    marked[v] = 1;
-                    AffPrime.push_back(v);
+                    if (!marked[v]) {
+                        marked[v] = 1;
+                        AffPrime.push_back(v);
+                    }
                 }
             }
         }
 
         Aff = move(AffPrime);
+               // Print Affected edges
+    cout << "Affected Edges: at iteration "<< m << ": ";
+    for (int i = 0; i < Aff.size(); ++i) {
+        cout << Aff[i] << " ";
+    } cout <<endl; 
+    }
+
+    updateParentAndDistance();
+}
+
+void SOSP_Update::removeAffectedEdges()
+{
+    for (int u = 0; u < numVertices; ++u) {
+        auto& edges = adjacencyList[u];
+        for (auto it = edges.begin(); it != edges.end(); ) {
+            int v = it->first;
+            int w = it->second;
+
+            if (distances[v] != distances[u] + w || parent[v] != u) {
+                it = edges.erase(it);
+            } else {
+                ++it;
+            }
+        }
     }
 }
