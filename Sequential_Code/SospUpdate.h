@@ -18,7 +18,10 @@ public:
     const vector<int>& getDistances() const;
    
     const vector<int>& getParentArray() const;
-
+    const vector<list<pair<int, int>>>& getGraph() const {
+        return adjacencyList;
+    }
+    
 private:
     int numVertices;
     vector<list<pair<int, int>>> adjacencyList;
