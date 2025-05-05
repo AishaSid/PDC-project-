@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\auxapi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\balance.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\bucketsort.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\checkgraph.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\coarsen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\compress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\contig.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\debug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\fm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\fortran.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\frename.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\gklib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\graph.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\initpart.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\kmetis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\kwayfm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\kwayrefine.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\mcutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\mesh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\meshpart.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\minconn.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\mincover.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\mmd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\ometis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\options.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\parmetis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\pmetis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\refine.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\separator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\sfm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\srefine.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\stat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\timing.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\wspace.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\PDC Project\PDC-project-\external\METIS\libmetis\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{79A563D6-8A7A-360B-919C-A8E4C3192C55}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

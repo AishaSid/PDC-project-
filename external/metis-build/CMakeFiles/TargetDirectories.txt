@@ -1,0 +1,9 @@
+E:/PDC Project/PDC-project-/external/metis-build/CMakeFiles/ALL_BUILD.dir
+E:/PDC Project/PDC-project-/external/metis-build/CMakeFiles/ZERO_CHECK.dir
+E:/PDC Project/PDC-project-/external/metis-build/libmetis/CMakeFiles/metis.dir
+E:/PDC Project/PDC-project-/external/metis-build/programs/CMakeFiles/gpmetis.dir
+E:/PDC Project/PDC-project-/external/metis-build/programs/CMakeFiles/ndmetis.dir
+E:/PDC Project/PDC-project-/external/metis-build/programs/CMakeFiles/mpmetis.dir
+E:/PDC Project/PDC-project-/external/metis-build/programs/CMakeFiles/m2gmetis.dir
+E:/PDC Project/PDC-project-/external/metis-build/programs/CMakeFiles/graphchk.dir
+E:/PDC Project/PDC-project-/external/metis-build/programs/CMakeFiles/cmpfillin.dir

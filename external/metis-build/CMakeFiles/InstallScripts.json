@@ -1,0 +1,9 @@
+{
+	"InstallScripts" : 
+	[
+		"E:/PDC Project/PDC-project-/external/metis-build/cmake_install.cmake",
+		"E:/PDC Project/PDC-project-/external/metis-build/libmetis/cmake_install.cmake",
+		"E:/PDC Project/PDC-project-/external/metis-build/programs/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

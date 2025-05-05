@@ -1,0 +1,10 @@
+^E:\PDC PROJECT\PDC-PROJECT-\EXTERNAL\METIS-BUILD\CMAKEFILES\A00A83828F6966C0F40A026D94E2B02E\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SE:/PDC Project/PDC-project-/external/METIS" "-BE:/PDC Project/PDC-project-/external/metis-build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "E:/PDC Project/PDC-project-/external/metis-build/METIS.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

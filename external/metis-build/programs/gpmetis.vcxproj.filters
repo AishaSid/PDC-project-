@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\programs\gpmetis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\programs\cmdline_gpmetis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\programs\io.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\PDC Project\PDC-project-\external\METIS\programs\stat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\PDC Project\PDC-project-\external\METIS\programs\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{79A563D6-8A7A-360B-919C-A8E4C3192C55}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
