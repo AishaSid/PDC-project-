@@ -1,5 +1,6 @@
 #include "SospUpdate.h"
 #include <queue>
+#include <mpi.h>
 #include <algorithm>
 #include <limits>
 #include <unordered_set>

@@ -5,6 +5,7 @@
 #include <list>
 #include <utility>
 #include <tuple>
+#include "SospUpdate.h"
 using namespace std;
 
 class MOSP_Update {
@@ -21,11 +22,12 @@ public:
     // Function to get the parent array
     const vector<int>& getParentArray() const;
 
-    vector<vector<pair<int, int>>> combinedGraph;
-    vector<vector<vector<pair<int, int>>>> ssspTrees; // Multiple SSSP trees
-private:
+    vector<SOSP_Update> ssspTrees; 
+
+
+    vector<vector<pair<int, int>>> combinedGraph; 
     int numVertices;
-    
+    private:   
     vector<int> distances;
     vector<int> parent;
 
