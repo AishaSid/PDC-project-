@@ -21,9 +21,11 @@ public:
     // Function to get the parent array
     const vector<int>& getParentArray() const;
 
+    vector<vector<pair<int, int>>> combinedGraph;
+    vector<vector<vector<pair<int, int>>>> ssspTrees; // Multiple SSSP trees
 private:
     int numVertices;
-    vector<vector<vector<pair<int, int>>>> ssspTrees; // Multiple SSSP trees
+    
     vector<int> distances;
     vector<int> parent;
 

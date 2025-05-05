@@ -35,6 +35,7 @@ const vector<int>& MOSP_Update::getParentArray() const
 
 void MOSP_Update::findUpdatedSOSPTree(const vector<tuple<int, int, int>>& insertions, int treeIndex) 
 {
+    cout<<"Entered findUpdatedSOSPTree function for tree: "<<treeIndex<<endl;
     SOSP_Update sospUpdate(ssspTrees[treeIndex], numVertices);
     sospUpdate.update(insertions);
     distances = sospUpdate.getDistances();
@@ -43,7 +44,7 @@ void MOSP_Update::findUpdatedSOSPTree(const vector<tuple<int, int, int>>& insert
 
 void MOSP_Update::createCombinedGraph()
  {
-    vector<vector<pair<int, int>>> combinedGraph(numVertices);
+    combinedGraph.assign(numVertices, vector<pair<int, int>>());
 
     for (const auto& tree : ssspTrees) 
     {
