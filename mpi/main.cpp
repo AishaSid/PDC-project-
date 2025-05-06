@@ -392,8 +392,8 @@ void MOSP_Update::update(const vector<tuple<int, int, int>>& insertions)
     }
 
     // Broadcast final result
-    MPI_Bcast(distances.data(), distances.size(), MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(parent.data(), parent.size(), MPI_INT, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(distances.data(), distances.size(), MPI_INT, 0, MPI_COMM_WORLD);
+   // MPI_Bcast(parent.data(), parent.size(), MPI_INT, 0, MPI_COMM_WORLD);
 }
 
 const vector<int>& MOSP_Update::getDistances() const
@@ -460,13 +460,18 @@ void printGraphList(const GraphType& graph) {
 }
 
 
-void printCombinedGraph(const vector<vector<map<int, int>>>& combinedGraph) {
-    for (size_t u = 0; u < combinedGraph.size(); ++u) {
+void printCombinedGraph(const vector<vector<map<int, int>>>& combinedGraph, int numVertices) 
+{
+    for (size_t u = 0; u < combinedGraph.size(); ++u)
+     {
         cout << "Vertex " << u + 1 << " -> ";
-        for (size_t v = 0; v < combinedGraph[u].size(); ++v) {
+
+        for (size_t v = 0; v < numVertices; ++v) 
+        {
             if (!combinedGraph[u][v].empty()) {
                 cout << "V" << v + 1 << " (weights: ";
-                for (const auto& [weight, count] : combinedGraph[u][v]) {
+                for (const auto& [weight, count] : combinedGraph[u][v])
+                 {
                     cout << weight << " (count = " << count << "), ";
                 }
                 cout << ") ";
@@ -586,7 +591,7 @@ void testLargeGraph() {
     
 
     cout<<"Combined Graph: "<<endl; 
-    printCombinedGraph(mosp.combinedGraph);
+    printCombinedGraph(mosp.combinedGraph, numVertices);
 }
 
 
@@ -674,7 +679,7 @@ int main(int argc, char** argv)
 
        
         cout << "Combined Graph: " << endl;
-        printCombinedGraph(mosp.combinedGraph);
+        printCombinedGraph(mosp.combinedGraph, numVertices);
 
       //  cout << "Testing for large graph: " << endl;
      //   testLargeGraph();

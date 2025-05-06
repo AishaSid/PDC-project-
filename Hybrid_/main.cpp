@@ -531,8 +531,10 @@ void printCombinedGraph(const vector<vector<map<int, int>>>& combinedGraph, int 
     
     for (size_t u = 0; u < numVertices; ++u) {
         cout << "Vertex " << u + 1 << " -> ";
-        for (size_t v = 0; v < combinedGraph[u].size(); ++v) {
-            if (!combinedGraph[u][v].empty()) {
+        for (size_t v = 0; v < numVertices; ++v) 
+        {
+            if (!combinedGraph[u][v].empty()) 
+            {
                 cout << "V" << v + 1 << " (weights: ";
                 for (const auto& [weight, count] : combinedGraph[u][v]) {
                     cout << weight << " (count = " << count << "), ";

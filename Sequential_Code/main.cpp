@@ -1,16 +1,357 @@
 #include <iostream>
 #include <vector>
-#include "MospUpdate.h"
-#include "SospUpdate.h"
-#include "Mosp_Update.h"
-#include "Sosp_Update.h"
 #include <queue>
 #include <algorithm>
 #include <limits>
 #include <utility>
 #include <fstream>
+#include <queue>
+#include <algorithm>
+#include <limits>
+#include <unordered_set>
+#include <list>
+#include <unordered_map>
+#include <queue>
+#include <algorithm>
+#include <limits>
+#include <iostream>
+#include <vector>
+#include <utility> 
+#include <tuple>
 using namespace std;
 
+// Declare combinedGraph as a member variable
+
+class SOSP_Update {
+    public:
+        // Constructor
+        SOSP_Update(const vector<vector<pair<int, int>>>& graph, int numVertices);
+        
+        void update(const vector<tuple<int, int, int>>& insertions);
+        
+        const vector<int>& getDistances() const;
+       
+        const vector<int>& getParentArray() const;
+        const vector<list<pair<int, int>>>& getGraph() const {
+            return adjacencyList;
+        }
+        
+        void removeAffectedEdges();
+    private:
+        int numVertices;
+        vector<list<pair<int, int>>> adjacencyList;
+        vector<list<pair<int, int>>> reverseAdjList;
+    
+        vector<int> distances;
+        vector<int> parent;
+        vector<int> marked;
+        void updateParentAndDistance();
+    
+        vector<list<pair<int, int>>> preprocess(const vector<tuple<int, int, int>>& insertions);
+        
+        void processChangedEdges(const vector<list<pair<int, int>>>& I);
+        void propagateUpdate(vector<int>& Aff);
+    };
+
+class MOSP_Update {
+    public:
+        // Constructor
+        MOSP_Update(const vector<vector<pair<int, int>>>& graph, const vector<int>& sources);
+    
+        // Function to update the graph with new insertions for multiple SSSP trees
+        void update(const vector<tuple<int, int, int>>& insertions);
+    
+        // Function to get the updated distances
+        const vector<int>& getDistances() const;
+    
+        // Function to get the parent array
+        const vector<int>& getParentArray() const;
+    
+        vector<SOSP_Update> ssspTrees; 
+    
+    
+        vector<vector<pair<int, int>>> combinedGraph; 
+        int numVertices;
+        private:   
+        vector<int> distances;
+        vector<int> parent;
+    
+        void findUpdatedSOSPTree(const vector<tuple<int, int, int>>& insertions, int treeIndex);
+        void createCombinedGraph();
+        void findSOSPInCombinedGraph();
+    };
+
+void SOSP_Update::updateParentAndDistance()
+{
+    for (int u = 0; u < numVertices; ++u) {
+        for (const auto& [v, w] : adjacencyList[u]) {
+            if (distances[u] != numeric_limits<int>::max() && distances[v] > distances[u] + w) {
+                distances[v] = distances[u] + w;
+                parent[v] = u;
+            }
+        }
+    }
+}
+
+
+SOSP_Update::SOSP_Update(const vector<vector<pair<int, int>>>& graph, int numVertices)
+    : numVertices(numVertices),
+      adjacencyList(numVertices),
+      distances(numVertices, numeric_limits<int>::max()),
+      parent(numVertices, -1),
+      marked(numVertices, 0),
+      reverseAdjList(numVertices)
+{
+    for (int u = 0; u < numVertices; ++u) {
+        for (const auto& [v, w] : graph[u]) {
+            adjacencyList[u].emplace_back(v, w);
+            reverseAdjList[v].emplace_back(u, w);
+        }
+    }
+
+    if (!distances.empty()) {
+        distances[0] = 0;  // Source node is assumed to be 0
+    }
+}
+
+const vector<int>& SOSP_Update::getDistances() const { return distances; }
+const vector<int>& SOSP_Update::getParentArray() const { return parent; }
+
+void SOSP_Update::update(const vector<tuple<int, int, int>>& insertions)
+{
+    marked.assign(numVertices, 0);
+    vector<int> Aff;
+
+    
+    for (const auto& [u, v, w] : insertions)
+    {
+        // Add to graph and reverse graph
+        adjacencyList[u].emplace_back(v, w);
+        reverseAdjList[v].emplace_back(u, w);
+
+        if (distances[u] != numeric_limits<int>::max() && distances[v] > distances[u] + w)
+        {
+            distances[v] = distances[u] + w;
+            parent[v] = u;
+            if (!marked[v]) {
+                marked[v] = 1;
+                Aff.push_back(v);
+            }
+        }
+    }
+
+    
+    // Step 1: Print the graph
+    cout << "Step 1 :" << endl;
+    for (int u = 0; u < numVertices; ++u) 
+    {
+        cout << "Node " << u << ":";
+        for (const auto& [v, w] : adjacencyList[u]) 
+        {
+            cout << " -> (" << v << ", " << w << ")";
+        }
+        cout << endl;
+    }
+    // print the parent array
+    cout << "Parent Array before update: ";       
+    for (int i = 0; i < numVertices; ++i) {
+        cout << parent[i] << " ";
+    }cout << endl;
+
+   // updateParentAndDistance();
+
+    // cout << "Parent Array after update: ";       
+    // for (int i = 0; i < numVertices; ++i) {
+    //     cout << parent[i] << " ";
+    // }cout << endl;
+
+    // Print Affected edges
+    cout << "Affected Edges: ";
+    for (int i = 0; i < Aff.size(); ++i) {
+        cout << Aff[i] << " ";
+    }cout <<endl;
+
+
+
+    propagateUpdate(Aff);
+}
+
+void SOSP_Update::propagateUpdate(vector<int>& Aff)
+{
+    unordered_set<int> N;
+        int m = 0; 
+    while (!Aff.empty())
+    {
+        m++;
+        vector<int> AffPrime;
+        N.clear();
+
+        for (int v : Aff)
+        {
+            for (const auto& [nbr, _] : adjacencyList[v])
+                N.insert(nbr);
+        }
+
+        for (int v : N)
+        {
+            for (const auto& [u, w] : reverseAdjList[v])
+            {
+                if (!marked[u]) continue;
+
+                if (distances[v] > distances[u] + w)
+                {
+                    distances[v] = distances[u] + w;
+                    parent[v] = u;
+                    if (!marked[v]) {
+                        marked[v] = 1;
+                        AffPrime.push_back(v);
+                    }
+                }
+            }
+        }
+
+        Aff = move(AffPrime);
+               // Print Affected edges
+    cout << "Affected Edges: at iteration "<< m << ": ";
+    for (int i = 0; i < Aff.size(); ++i) {
+        cout << Aff[i] << " ";
+    } cout <<endl; 
+    }
+
+    updateParentAndDistance();
+}
+
+void SOSP_Update::removeAffectedEdges()
+{
+    for (int u = 0; u < numVertices; ++u) {
+        auto& edges = adjacencyList[u];
+        for (auto it = edges.begin(); it != edges.end(); ) {
+            int v = it->first;
+            int w = it->second;
+
+            if (distances[v] != distances[u] + w || parent[v] != u) {
+                it = edges.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+}
+
+
+
+MOSP_Update::MOSP_Update(const vector<vector<pair<int, int>>>& graph, const vector<int>& sources)
+    : numVertices(graph.size()), 
+      distances(numVertices, numeric_limits<int>::max()), 
+      parent(numVertices, -1) {
+    for (size_t i = 0; i < sources.size(); ++i) {
+        ssspTrees.emplace_back(graph, numVertices);
+    }
+}
+
+void MOSP_Update::update(const vector<tuple<int, int, int>>& insertions) 
+{
+    for (size_t i = 0; i < ssspTrees.size(); ++i) // Loop over the size of sources (or ssspTrees)
+    {
+        findUpdatedSOSPTree(insertions, i);
+    }
+    createCombinedGraph();
+    findSOSPInCombinedGraph();
+}
+
+const vector<int>& MOSP_Update::getDistances() const
+{
+    return distances;
+}
+
+const vector<int>& MOSP_Update::getParentArray() const 
+{
+    return parent;
+}
+
+void MOSP_Update::findUpdatedSOSPTree(const vector<tuple<int, int, int>>& insertions, int treeIndex) 
+{
+    cout << "Entered findUpdatedSOSPTree function for tree: " << treeIndex << endl;
+    ssspTrees[treeIndex].update(insertions); // Directly update the corresponding SOSP_Update instance
+    ssspTrees[treeIndex].removeAffectedEdges(); // Remove affected edges from the tree
+    cout << "Updated SOSP tree for source: " << treeIndex << endl;
+    cout << "Parent Array after update: ";
+    for (int i = 0; i < numVertices; ++i) {
+        cout << ssspTrees[treeIndex].getParentArray()[i] << " ";
+    } cout << endl;
+}
+
+void MOSP_Update::createCombinedGraph()
+{
+    combinedGraph.assign(numVertices, vector<pair<int, int>>());
+
+    for (const auto& sospTree : ssspTrees) 
+    {
+        const auto& graph = sospTree.getGraph(); // Get the adjacency list from SOSP_Update
+        for (int u = 0; u < numVertices; ++u) 
+        {
+            for (const auto& edge : graph[u]) 
+            {
+                combinedGraph[u].push_back(edge);
+            }
+        }
+    }
+
+    // Assign weights based on the number of trees each edge appears in
+    for (int u = 0; u < numVertices; ++u) 
+    {
+        for (auto& edge : combinedGraph[u]) {
+            int count = 0;
+            for (const auto& sospTree : ssspTrees) {
+                const auto& graph = sospTree.getGraph();
+                if (find(graph[u].begin(), graph[u].end(), edge) != graph[u].end()) {
+                    ++count;
+                }
+            }
+            edge.second = (ssspTrees.size() - count + 1);
+        }
+    }
+
+    // Update the combined graph with the new weights
+    for (int u = 0; u < numVertices; ++u) 
+    {
+        for (auto& edge : combinedGraph[u]) 
+        {
+            edge.second = 1; // Assign actual edge weights
+        }
+    }
+}
+
+void MOSP_Update::findSOSPInCombinedGraph() 
+{
+    // Implement Dijkstra's algorithm or another shortest path algorithm to find the SOSP in the combined graph
+    // This is a placeholder for the actual implementation
+    fill(distances.begin(), distances.end(), numeric_limits<int>::max());
+    distances[0] = 0; // Assuming source is vertex 0
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    pq.push({0, 0});
+
+    while (!pq.empty()) 
+    {
+        int dist = pq.top().first;
+        int u = pq.top().second;
+        pq.pop();
+
+        if (dist > distances[u]) continue;
+
+        for (const auto& edge : combinedGraph[u]) 
+        {
+            int v = edge.first;
+            int weight = edge.second;
+            if (distances[v] > distances[u] + weight) 
+            {
+                distances[v] = distances[u] + weight;
+                parent[v] = u;
+                pq.push({distances[v], v});
+            }
+        }
+    }
+}
 void readGraph(const string& filename, vector<vector<pair<int, int>>>& graph) {
     ifstream file(filename);
     if (!file) {
