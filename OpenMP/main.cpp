@@ -11,8 +11,9 @@
 #include <unordered_set>
 #include <tuple>
 #include <map>
+#include <chrono>
 using namespace std;
-
+using namespace chrono;
 void readGraph(const string& filename, vector<vector<pair<int, int>>>& graph) {
     ifstream file(filename);
     if (!file) {
@@ -590,73 +591,11 @@ void runDijkstra(const vector<vector<pair<int, int>>>& graph, int source) {
     }
 }
 
-void testLargeGraph() {
-    int numVertices = 100;
-    vector<vector<pair<int, int>>> graph(numVertices);
-    srand(42); 
-    for (int i = 1; i < numVertices; ++i) {
-        int parent = rand() % i;
-        int weight = 1 + rand() % 10;
-        graph[parent].push_back({i, weight});
-        graph[i].push_back({parent, weight});
-    }
-    int extraEdges = numVertices * 2;
-    for (int i = 0; i < extraEdges; ++i) {
-        int u = rand() % numVertices;
-        int v = rand() % numVertices;
-        if (u != v) {
-            int weight = 1 + rand() % 10;
-            graph[u].push_back({v, weight});
-        }
-    }
-    cout << "Created large graph with " << numVertices << " vertices" << endl;
-    vector<int> sources = {0, 1};
-    vector<tuple<int, int, int>> insertions;
-    for (int i = 0; i < 10; ++i) {
-        int u = rand() % numVertices;
-        int v = rand() % numVertices;
-        int w = 1 + rand() % 5;
-        if (u != v) {
-            insertions.push_back({u, v, w});
-        }
-    }
-    cout << "Generated " << insertions.size() << " insertions" << endl;
-    cout << "\nBefore insertions:" << endl;
-    runDijkstra(graph, sources[0]);
-    for (const auto& [u, v, w] : insertions) {
-        graph[u].push_back({v, w});
-    }
-    cout << "\nAfter insertions:" << endl;
-    runDijkstra(graph, sources[0]);
-    
-    // Now use your MOSP algorithm here
-    // MOSP_Update mosp(graph, sources);
-    // mosp.update(insertions);
-    
-    // Compare results
-    // const vector<int>& mosp_dist = mosp.getDistances();
-    // const vector<int>& mosp_parent = mosp.getParentArray();
-    
-    // Verify MOSP results by comparing with Dijkstra
-    // (You would need to add verification code here)
-    MOSP_Update mosp(graph, sources);
-    cout<<"graph made"<<endl;
-    mosp.update(insertions);
-    cout<<"insertions done"<<endl;
-    for (size_t i = 0; i < mosp.ssspTrees.size(); ++i) {
-        cout << "SOSP Tree for Source " << i + 1 << ":\n";
-        printGraphList(mosp.ssspTrees[i].getGraph());
-        cout << endl;
-    }
-    
 
-    cout<<"Combined Graph: "<<endl; 
-    printCombinedGraph(mosp.combinedGraph, numVertices);
-}
 
 int main(int argc, char** argv) 
 {
-
+    auto start = high_resolution_clock::now();
     MPI_Init(&argc, &argv);
 
     int world_size;
@@ -681,14 +620,8 @@ int main(int argc, char** argv)
 
     if (world_rank == 0) 
     {
-       // readGraph("graph.txt", graph);
-       graph[0].push_back({2, 8});     // V1 -> V3
-       graph[2].push_back({1, 2});     // V3 -> V2
-       graph[1].push_back({3, 3});     // V2 -> V4
-       graph[1].push_back({4, 9});     // V2 -> V5
-       graph[3].push_back({5, 2});     // V4 -> V6
-       graph[4].push_back({3, 2});     // V5 -> V4
-       graph[4].push_back({5, 6});     // V5 -> V6
+    readGraph("small_dataset.txt", graph);
+       
    
     }
 
@@ -753,9 +686,22 @@ int main(int argc, char** argv)
     }
 
     MPI_Finalize();
-
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop-start);
+    cout<<"Time taken using openMP is: "<<duration.count()<<endl;
     return 0;
 }
 
+// Small Dataset (8 threads, 2 processes): 292, 279, 494, 277 avg = 335.5 ms 
+// Medium Dataset (8 threads, 2 processes): 477, 400, 392, 463 avg = 433 ms
+// Large Dataset (8 threads, 2 processes): 536, 505, 520, 555 avg = 529 ms
 
+
+// Small Dataset (4 threads, 2 processes): 292, 298, 285, 284 avg = 289.75 ms 
+// Medium Dataset (4 threads, 2 processes): 373, 372, 375, 484 = 401 ms
+// Large Dataset (4 threads, 2 processes): 467, 493, 470, 473 avg = 475.75
+
+// Small Dataset (2 threads, 2 processes): 274, 311, 343, 312 avg = 310 ms 
+// Medium Dataset (2 threads, 2 processes): 385, 368, 360, 391   = 376 ms
+// Large Dataset (2 threads, 2 processes): 472, 844, 464, 802  avg = 645.5 ms
 

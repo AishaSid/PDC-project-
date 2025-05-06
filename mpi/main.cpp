@@ -12,6 +12,8 @@ using namespace std;
 #include <unordered_set>
 #include <tuple>
 #include <map>
+#include <chrono>
+using namespace chrono;
 
 
 void readGraph(const string& filename, vector<vector<pair<int, int>>>& graph) {
@@ -591,6 +593,7 @@ void testLargeGraph() {
 int main(int argc, char** argv) 
 {
 
+    auto start = high_resolution_clock::now();
     MPI_Init(&argc, &argv);
 
     int world_size;
@@ -678,7 +681,9 @@ int main(int argc, char** argv)
     }
 
     MPI_Finalize();
-
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop-start);
+    cout<<"Time taken using openMP is: "<<duration.count()<<endl;
     return 0;
 }
 
