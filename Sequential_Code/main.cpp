@@ -20,11 +20,12 @@ void printGraph(const vector<vector<pair<int, int>>>& graph) {
     }
 }
 
-void printGraphList(const vector<vector<pair<int, int>>>& graph) {
+template <typename GraphType>
+void printGraphList(const GraphType& graph) {
     for (size_t u = 0; u < graph.size(); ++u) {
         cout << "V" << u + 1 << " -> ";
-        for (const auto& [v, w] : graph[u]) {
-            cout << "V" << v + 1 << " (edge = " << w << ") ";
+        for (const auto& edge : graph[u]) {
+            cout << "V" << edge.first + 1 << " (edge = " << edge.second << ") ";
         }
         cout << endl;
     }
@@ -133,7 +134,7 @@ void testLargeGraph() {
     cout<<"insertions done"<<endl;
     for (size_t i = 0; i < mosp.ssspTrees.size(); ++i) {
         cout << "SOSP Tree for Source " << i + 1 << ":\n";
-        printGraphList(mosp.ssspTrees[i]);
+        printGraphList(mosp.ssspTrees[i].getGraph());
         cout << endl;
     }
     
@@ -158,7 +159,7 @@ int main() {
      graph[4].push_back({5, 6});     // V5 -> V6
  
      // Initialize the MOSP_Update object with multiple sources
-     vector<int> sources = {0, 0};
+     vector<int> sources = {0, 1};
      MOSP_Update mosp(graph, sources);
     cout<<"graph made"<<endl;
      // Insert new edges
@@ -179,7 +180,7 @@ int main() {
 
      for (size_t i = 0; i < mosp.ssspTrees.size(); ++i) {
         cout << "SOSP Tree for Source " << i + 1 << ":\n";
-        printGraphList(mosp.ssspTrees[i]);
+        printGraphList(mosp.ssspTrees[i].getGraph());
         cout << endl;
     }
     
