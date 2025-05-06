@@ -8,7 +8,25 @@
 #include <algorithm>
 #include <limits>
 #include <utility>
+#include <fstream>
 using namespace std;
+
+void readGraph(const string& filename, vector<vector<pair<int, int>>>& graph) {
+    ifstream file(filename);
+    if (!file) {
+        cerr << "Error: Unable to open the file." << endl;
+        return;
+    }
+    int num_nodes, num_edges;
+    file >> num_nodes >> num_edges;  
+    graph.resize(num_nodes + 1);  
+    int start, end, weight;
+    while (file >> start >> end >> weight) {
+        graph[start].push_back(make_pair(end, weight));  
+    }
+    file.close();  
+}
+
 
 void printGraph(const vector<vector<pair<int, int>>>& graph) {
     for (size_t u = 0; u < graph.size(); ++u) {

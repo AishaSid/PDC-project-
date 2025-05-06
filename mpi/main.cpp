@@ -6,12 +6,29 @@
 #include <limits>
 #include <list>
 #include <utility>
+#include <fstream>
 using namespace std;
 #include <algorithm>
 #include <unordered_set>
 #include <tuple>
 #include <map>
 
+
+void readGraph(const string& filename, vector<vector<pair<int, int>>>& graph) {
+    ifstream file(filename);
+    if (!file) {
+        cerr << "Error: Unable to open the file." << endl;
+        return;
+    }
+    int num_nodes, num_edges;
+    file >> num_nodes >> num_edges;  
+    graph.resize(num_nodes + 1);  
+    int start, end, weight;
+    while (file >> start >> end >> weight) {
+        graph[start].push_back(make_pair(end, weight));  
+    }
+    file.close();  
+}
 
 
 class SOSP_Update {
@@ -592,19 +609,13 @@ int main(int argc, char** argv)
       //  return 1;
     }
 
-    int numVertices = 6;
+    int numVertices = 600;
     vector<vector<pair<int, int>>> graph(numVertices);
+    
 
     if (world_rank == 0) 
     {
-        // Process 0 initializes the graph
-        graph[0].push_back({2, 8});     // V1 -> V3
-        graph[2].push_back({1, 2});     // V3 -> V2
-        graph[1].push_back({3, 3});     // V2 -> V4
-        graph[1].push_back({4, 9});     // V2 -> V5
-        graph[3].push_back({5, 2});     // V4 -> V6
-        graph[4].push_back({3, 2});     // V5 -> V4
-        graph[4].push_back({5, 6});     // V5 -> V6
+        readGraph("graph.txt", graph);
     }
 
     // Broadcast the graph to all processes
