@@ -9,13 +9,20 @@
 #include <tuple>
 using namespace std;
 
+// Declare combinedGraph as a member variable
+
 MOSP_Update::MOSP_Update(const vector<vector<pair<int, int>>>& graph, const vector<int>& sources)
-    : numVertices(graph.size()), ssspTrees(sources.size(), graph), distances(numVertices, numeric_limits<int>::max()), parent(numVertices, -1) {
+    : numVertices(graph.size()), 
+      distances(numVertices, numeric_limits<int>::max()), 
+      parent(numVertices, -1) {
+    for (size_t i = 0; i < sources.size(); ++i) {
+        ssspTrees.emplace_back(graph, numVertices);
+    }
 }
 
 void MOSP_Update::update(const vector<tuple<int, int, int>>& insertions) 
 {
-    for (size_t i = 0; i < insertions.size(); ++i) 
+    for (size_t i = 0; i < ssspTrees.size(); ++i) // Loop over the size of sources (or ssspTrees)
     {
         findUpdatedSOSPTree(insertions, i);
     }
@@ -35,22 +42,26 @@ const vector<int>& MOSP_Update::getParentArray() const
 
 void MOSP_Update::findUpdatedSOSPTree(const vector<tuple<int, int, int>>& insertions, int treeIndex) 
 {
-    cout<<"Entered findUpdatedSOSPTree function for tree: "<<treeIndex<<endl;
-    SOSP_Update sospUpdate(ssspTrees[treeIndex], numVertices);
-    sospUpdate.update(insertions);
-    distances = sospUpdate.getDistances();
-    parent = sospUpdate.getParentArray();
+    cout << "Entered findUpdatedSOSPTree function for tree: " << treeIndex << endl;
+    ssspTrees[treeIndex].update(insertions); // Directly update the corresponding SOSP_Update instance
+    ssspTrees[treeIndex].removeAffectedEdges(); // Remove affected edges from the tree
+    cout << "Updated SOSP tree for source: " << treeIndex << endl;
+    cout << "Parent Array after update: ";
+    for (int i = 0; i < numVertices; ++i) {
+        cout << ssspTrees[treeIndex].getParentArray()[i] << " ";
+    } cout << endl;
 }
 
 void MOSP_Update::createCombinedGraph()
- {
+{
     combinedGraph.assign(numVertices, vector<pair<int, int>>());
 
-    for (const auto& tree : ssspTrees) 
+    for (const auto& sospTree : ssspTrees) 
     {
+        const auto& graph = sospTree.getGraph(); // Get the adjacency list from SOSP_Update
         for (int u = 0; u < numVertices; ++u) 
         {
-            for (const auto& edge : tree[u]) 
+            for (const auto& edge : graph[u]) 
             {
                 combinedGraph[u].push_back(edge);
             }
@@ -62,8 +73,9 @@ void MOSP_Update::createCombinedGraph()
     {
         for (auto& edge : combinedGraph[u]) {
             int count = 0;
-            for (const auto& tree : ssspTrees) {
-                if (find(tree[u].begin(), tree[u].end(), edge) != tree[u].end()) {
+            for (const auto& sospTree : ssspTrees) {
+                const auto& graph = sospTree.getGraph();
+                if (find(graph[u].begin(), graph[u].end(), edge) != graph[u].end()) {
                     ++count;
                 }
             }
@@ -98,8 +110,8 @@ void MOSP_Update::findSOSPInCombinedGraph()
 
         if (dist > distances[u]) continue;
 
-        for (const auto& edge : ssspTrees[0][u])
-         { // Use the first SSSP tree for demonstration
+        for (const auto& edge : combinedGraph[u]) 
+        {
             int v = edge.first;
             int weight = edge.second;
             if (distances[v] > distances[u] + weight) 

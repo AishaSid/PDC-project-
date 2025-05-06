@@ -88,10 +88,10 @@ void SOSP_Update::update(const vector<tuple<int, int, int>>& insertions)
 
    // updateParentAndDistance();
 
-    cout << "Parent Array after update: ";       
-    for (int i = 0; i < numVertices; ++i) {
-        cout << parent[i] << " ";
-    }cout << endl;
+    // cout << "Parent Array after update: ";       
+    // for (int i = 0; i < numVertices; ++i) {
+    //     cout << parent[i] << " ";
+    // }cout << endl;
 
     // Print Affected edges
     cout << "Affected Edges: ";
