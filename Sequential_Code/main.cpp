@@ -9,7 +9,9 @@
 #include <limits>
 #include <utility>
 #include <fstream>
+#include <chrono>
 using namespace std;
+using namespace chrono;
 
 void readGraph(const string& filename, vector<vector<pair<int, int>>>& graph) {
     ifstream file(filename);
@@ -97,85 +99,17 @@ void runDijkstra(const vector<vector<pair<int, int>>>& graph, int source) {
 }
 
 
-void testLargeGraph() {
-    int numVertices = 100;
-    vector<vector<pair<int, int>>> graph(numVertices);
-    srand(42); 
-    for (int i = 1; i < numVertices; ++i) {
-        int parent = rand() % i;
-        int weight = 1 + rand() % 10;
-        graph[parent].push_back({i, weight});
-        graph[i].push_back({parent, weight});
-    }
-    int extraEdges = numVertices * 2;
-    for (int i = 0; i < extraEdges; ++i) {
-        int u = rand() % numVertices;
-        int v = rand() % numVertices;
-        if (u != v) {
-            int weight = 1 + rand() % 10;
-            graph[u].push_back({v, weight});
-        }
-    }
-    cout << "Created large graph with " << numVertices << " vertices" << endl;
-    vector<int> sources = {0, 1};
-    vector<tuple<int, int, int>> insertions;
-    for (int i = 0; i < 10; ++i) {
-        int u = rand() % numVertices;
-        int v = rand() % numVertices;
-        int w = 1 + rand() % 5;
-        if (u != v) {
-            insertions.push_back({u, v, w});
-        }
-    }
-    cout << "Generated " << insertions.size() << " insertions" << endl;
-    cout << "\nBefore insertions:" << endl;
-    runDijkstra(graph, sources[0]);
-    for (const auto& [u, v, w] : insertions) {
-        graph[u].push_back({v, w});
-    }
-    cout << "\nAfter insertions:" << endl;
-    runDijkstra(graph, sources[0]);
-    
-    // Now use your MOSP algorithm here
-    // MOSP_Update mosp(graph, sources);
-    // mosp.update(insertions);
-    
-    // Compare results
-    // const vector<int>& mosp_dist = mosp.getDistances();
-    // const vector<int>& mosp_parent = mosp.getParentArray();
-    
-    // Verify MOSP results by comparing with Dijkstra
-    // (You would need to add verification code here)
-    MOSP_Update mosp(graph, sources);
-    cout<<"graph made"<<endl;
-    mosp.update(insertions);
-    cout<<"insertions done"<<endl;
-    for (size_t i = 0; i < mosp.ssspTrees.size(); ++i) {
-        cout << "SOSP Tree for Source " << i + 1 << ":\n";
-        printGraphList(mosp.ssspTrees[i].getGraph());
-        cout << endl;
-    }
-    
 
-    cout<<"Combined Graph: "<<endl; 
-    printGraphList(mosp.combinedGraph);
-}
 
 
 int main() {
-   
+    auto start = high_resolution_clock::now();
     int numVertices = 6;
      vector<vector<pair<int, int>>> graph(numVertices);
- 
+
+     readGraph("small_dataset.txt", graph);
      
-     graph[0].push_back({2, 8});     // V1 -> V3
-     graph[2].push_back({1, 2});     // V3 -> V2
-     graph[1].push_back({3, 3});     // V2 -> V4
-     graph[1].push_back({4, 9});     // V2 -> V5
-     graph[3].push_back({5, 2});     // V4 -> V6
-     graph[4].push_back({3, 2});     // V5 -> V4
-     graph[4].push_back({5, 6});     // V5 -> V6
- 
+     
      // Initialize the MOSP_Update object with multiple sources
      vector<int> sources = {0, 1};
      MOSP_Update mosp(graph, sources);
@@ -206,13 +140,16 @@ int main() {
     cout<<"Combined Graph: "<<endl; 
     printGraphList(mosp.combinedGraph);
 
-    cout<<"Testing for large graph: "<<endl;
-    testLargeGraph();
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop-start);
+    cout<<"Time taken in squential implementation is: "<<duration.count()<<endl;
+    
     return 0;
 }
 
-
-
+// Large dataset: 114ms
+// Medium dataset: 88ms
+// Small dataset: 0ms
 
 
 
